@@ -233,7 +233,7 @@ class MPNNDataset(Dataset):
 
         if targets:
             arr = np.array(targets)
-            print("\nTarget property statistics:")
+            print("\nTarget permeability statistics:")
             print(f"  mean={np.mean(arr):.3f}, min={np.min(arr):.3f}, max={np.max(arr):.3f}")
         else:
             print("\nNo target values found.")

@@ -8,18 +8,17 @@ import umap.umap_ as umap
 import random
 
 class MoleculeClusterAnalysis:
-    def __init__(self, model, dataset, batch_size=32, device='cpu'):
+    def __init__(self, model, dataset, batch_size=32, test_data = False):
         """
         Parameters:
             model: Trained MPNN model with forward supporting return_embedding=True
             dataset: MPNNDataset
             batch_size: DataLoader batch size
-            device: 'cpu' or 'cuda'
         """
-        self.model = model.to(device)
+        self.model = model.to('cpu')
         self.dataset = dataset
-        self.device = device
         self.batch_size = batch_size
+        self.test_data = test_data
 
         self.embeddings = None
         self.tsne_2d = None
@@ -39,7 +38,11 @@ class MoleculeClusterAnalysis:
 
         train_end = int(0.7 * n)
         val_end = int(0.85 * n)
-        idx = indices[val_end:]
+        
+        if self.test_data:
+            idx = indices[val_end:]
+        else:
+            idx = indices
 
         loader = DataLoader([self.dataset[i] for i in idx], batch_size=self.batch_size, shuffle=False)
 
@@ -50,7 +53,7 @@ class MoleculeClusterAnalysis:
 
         with torch.no_grad():
             for batch in loader:
-                batch = batch.to(self.device)
+                batch = batch.to('cpu')
                 emb = self.model(batch, return_embedding=True)  # returns graph-level embedding
                 all_emb.append(emb.cpu())
 
@@ -111,7 +114,7 @@ if __name__ == "__main__":
     model = torch.load("mpnn_model_full_trained.pt",weights_only=False)
     
     # Suppose `model` is trained and dataset is MPNNDataset
-    cluster_analysis = MoleculeClusterAnalysis(model, dataset, device='cpu')
+    cluster_analysis = MoleculeClusterAnalysis(model, dataset, test_data = True)
 
     # Extract embeddings
     embeddings = cluster_analysis.extract_embeddings()
