@@ -1,6 +1,4 @@
 # MPNN_Predicting_BBB_Permeability
-Implemented a Message Passing Neural Network (MPNN) to Predict the Permeability across the Blood Brain Barrier for Small Molecules
-
 This project is a pipeline of training a Graph Neural Network to predict the physiochemical property of small drug molecules, based on their molecular graphs. 
 
 A quick demo of the project is in the Demo.ipynb file. The computation is all very quick to run, so feel free to download and play with it.
